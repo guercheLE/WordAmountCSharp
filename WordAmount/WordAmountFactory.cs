@@ -60,9 +60,9 @@ namespace WordAmount
         #region Public Methods
 
         /// <summary>
-        /// Availables cultures.
+        /// Available cultures.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The available cultures.</returns>
         public static CultureInfo[] AvailableCultures()
         {
             return availableWordAmount.Select(awa => new CultureInfo(awa.Key)).ToArray();
@@ -74,7 +74,7 @@ namespace WordAmount
         /// <param name="culture">
         /// The specified culture to create the word amount object targeted to.
         /// </param>
-        /// <returns>Word Amount with specified culture implementation.</returns>
+        /// <returns>The Word Amount with specified culture implementation.</returns>
         /// <exception cref="ArgumentException"></exception>
         public static IWordAmount Create(CultureInfo culture)
         {

@@ -18,26 +18,48 @@ namespace WordAmount.de
     /// </summary>
     /// <seealso cref="WordAmount.Common.WordAmount"/>
     [Culture(culture: "de")]
-    public class WordAmount : Common.WordAmount
+    public sealed class WordAmount : Common.WordAmount
     {
-        #region Protected Fields
+        #region Private Fields
 
         /// <summary>
         /// The parts word.
         /// </summary>
-        protected static readonly string[,] partWord = new string[6, 2];
+        private static readonly string[,] partWord = new string[(int)PartCategory.Vigintillions + 1, 2];
 
         /// <summary>
         /// The amounts word.
         /// </summary>
-        protected static readonly string[] amountWord = new string[1000];
+        private static readonly string[] amountWord = new string[1000];
 
         /// <summary>
         /// The conjunction for cents.
         /// </summary>
-        protected static readonly string conjunctionForParts;
+        private static readonly string conjunctionForParts;
 
-        #endregion Protected Fields
+        #endregion Private Fields
+
+        #region Protected Properties
+
+        /// <summary>
+        /// Value must be greater than zero message.
+        /// </summary>
+        /// <value>The value must be greater than zero message.</value>
+        protected override string ValueMustBeGreaterThanZeroMessage => "Der Wert muss größer als Null sein.";
+
+        /// <summary>
+        /// Highest category supported.
+        /// </summary>
+        /// <value>The highest category supported.</value>
+        protected override PartCategory HighestCategorySupported => (PartCategory)partWord.GetLength(0) - 1;
+
+        /// <summary>
+        /// Maximum supported value exception message.
+        /// </summary>
+        /// <value>The maximum supported value exception message.</value>
+        protected override string MaxSupportedValueExceptionMessage => "Der höchste unterstützte Wert in Deutsch ist {0}";
+
+        #endregion Protected Properties
 
         #region Public Constructors
 
@@ -66,17 +88,56 @@ namespace WordAmount.de
             partWord[(int)PartCategory.Trillions, (int)NumberType.Singular] = "Billion";
             partWord[(int)PartCategory.Trillions, (int)NumberType.Plural] = "Billionen";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "Billiarde";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "Billiarden";
+            partWord[(int)PartCategory.Quadrillions, (int)NumberType.Singular] = "Billiarde";
+            partWord[(int)PartCategory.Quadrillions, (int)NumberType.Plural] = "Billiarden";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "Trillion";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "Trillionen";
+            partWord[(int)PartCategory.Quintillions, (int)NumberType.Singular] = "Trillion";
+            partWord[(int)PartCategory.Quintillions, (int)NumberType.Plural] = "Trillionen";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "Trilliarde";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "Trilliarden";
+            partWord[(int)PartCategory.Sextillions, (int)NumberType.Singular] = "Trilliarde";
+            partWord[(int)PartCategory.Sextillions, (int)NumberType.Plural] = "Trilliarden";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "Quartillion";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "Quartillionen";
+            partWord[(int)PartCategory.Septillions, (int)NumberType.Singular] = "Quartillion";
+            partWord[(int)PartCategory.Septillions, (int)NumberType.Plural] = "Quartillionen";
+
+            partWord[(int)PartCategory.Octillions, (int)NumberType.Singular] = "quadrilliarde";
+            partWord[(int)PartCategory.Octillions, (int)NumberType.Plural] = "quadrilliarden";
+
+            partWord[(int)PartCategory.Nonillions, (int)NumberType.Singular] = "quintillion";
+            partWord[(int)PartCategory.Nonillions, (int)NumberType.Plural] = "quintillionen";
+
+            partWord[(int)PartCategory.Decillions, (int)NumberType.Singular] = "quintilliarde";
+            partWord[(int)PartCategory.Decillions, (int)NumberType.Plural] = "quintilliarden";
+
+            partWord[(int)PartCategory.Undecillions, (int)NumberType.Singular] = "sextillion";
+            partWord[(int)PartCategory.Undecillions, (int)NumberType.Plural] = "sextillionen";
+
+            partWord[(int)PartCategory.Duodecillions, (int)NumberType.Singular] = "sextilliarde";
+            partWord[(int)PartCategory.Duodecillions, (int)NumberType.Plural] = "sextilliarden";
+
+            partWord[(int)PartCategory.Tredecillions, (int)NumberType.Singular] = "septillion";
+            partWord[(int)PartCategory.Tredecillions, (int)NumberType.Plural] = "septillionen";
+
+            partWord[(int)PartCategory.Quatttuordecillions, (int)NumberType.Singular] = "septilliarde";
+            partWord[(int)PartCategory.Quatttuordecillions, (int)NumberType.Plural] = "septilliarden";
+
+            partWord[(int)PartCategory.Quindecillions, (int)NumberType.Singular] = "oktillion";
+            partWord[(int)PartCategory.Quindecillions, (int)NumberType.Plural] = "oktillionen";
+
+            partWord[(int)PartCategory.Sexdecillions, (int)NumberType.Singular] = "oktilliarde";
+            partWord[(int)PartCategory.Sexdecillions, (int)NumberType.Plural] = "oktilliarden";
+
+            partWord[(int)PartCategory.Septendecillions, (int)NumberType.Singular] = "nonillion";
+            partWord[(int)PartCategory.Septendecillions, (int)NumberType.Plural] = "nonillionen";
+
+            partWord[(int)PartCategory.Octodecillions, (int)NumberType.Singular] = "nonilliarde";
+            partWord[(int)PartCategory.Octodecillions, (int)NumberType.Plural] = "nonilliarden";
+
+            partWord[(int)PartCategory.Novemdecillions, (int)NumberType.Singular] = "dezillion";
+            partWord[(int)PartCategory.Novemdecillions, (int)NumberType.Plural] = "dezillionen";
+
+            partWord[(int)PartCategory.Vigintillions, (int)NumberType.Singular] = "dezilliarde";
+            partWord[(int)PartCategory.Vigintillions, (int)NumberType.Plural] = "dezilliarden";
 
             amountWord[0] = "null";
             amountWord[1] = "ein";
@@ -154,11 +215,11 @@ namespace WordAmount.de
         /// <summary>
         /// Gets the specified value.
         /// </summary>
-        /// <param name="value">The value.</param>
         /// <param name="parts">The parts.</param>
+        /// <param name="pluralizeCurrency">Pluralize currency?</param>
         /// <param name="firstLetterUppercase">if set to <c>true</c> [first letter uppercase].</param>
         /// <returns>The value into word amount format.</returns>
-        protected override string Get(double value, IList<Part> parts, bool firstLetterUppercase = false)
+        protected override string Get(IList<Part> parts, bool pluralizeCurrency, bool firstLetterUppercase = false)
         {
             bool addCurrency = false;
             bool currencyAdded = false;
@@ -193,7 +254,7 @@ namespace WordAmount.de
                 if (addCurrency)
                 {
                     valueToReturn.Append(" ")
-                                 .Append(value > 1.99
+                                 .Append(pluralizeCurrency
                                          ? currencyWord[(int)NumberType.Plural]
                                          : currencyWord[(int)NumberType.Singular]);
 

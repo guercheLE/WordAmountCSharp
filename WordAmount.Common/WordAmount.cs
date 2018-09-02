@@ -9,7 +9,9 @@
 // </summary>
 namespace WordAmount.Common
 {
+    using System;
     using System.Collections.Generic;
+    using System.Text;
 
     /// <summary>
     /// Word Amount abstract class.
@@ -52,6 +54,28 @@ namespace WordAmount.Common
 
         #endregion Public Properties
 
+        #region Protected Properties
+
+        /// <summary>
+        /// Gets the value must be greater than zero message.
+        /// </summary>
+        /// <value>The value must be greater than zero message.</value>
+        protected abstract string ValueMustBeGreaterThanZeroMessage { get; }
+
+        /// <summary>
+        /// Highest category supported.
+        /// </summary>
+        /// <value>The highest category supported.</value>
+        protected abstract PartCategory HighestCategorySupported { get; }
+
+        /// <summary>
+        /// Maximum supported value exception message.
+        /// </summary>
+        /// <value>The maximum supported value exception message.</value>
+        protected abstract string MaxSupportedValueExceptionMessage { get; }
+
+        #endregion Protected Properties
+
         #region Public Methods
 
         /// <summary>
@@ -62,13 +86,14 @@ namespace WordAmount.Common
         /// <returns>Word Amount for the specified value.</returns>
         public string Get(double value, bool firstLetterUppercase = false)
         {
-            if (value == 0.00)
+            if (value <= 0)
             {
-                return string.Empty;
+                throw new ArgumentException(ValueMustBeGreaterThanZeroMessage, nameof(value));
             }
 
             IList<Part> parts = ParseValueIntoParts(value);
-            return Get(value, parts, firstLetterUppercase);
+            VerifyValueCanBeGotten(parts[0].Category);
+            return Get(parts, value > 1.99, firstLetterUppercase);
         }
 
         #endregion Public Methods
@@ -76,11 +101,25 @@ namespace WordAmount.Common
         #region Protected Methods
 
         /// <summary>
+        /// Gets the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="parts">The parts.</param>
+        /// <param name="pluralizeCurrency">Pluralize currency?</param>
+        /// <param name="firstLetterUppercase">if set to <c>true</c> [first letter uppercase].</param>
+        /// <returns>The value into word amount format.</returns>
+        protected abstract string Get(IList<Part> parts, bool pluralizeCurrency, bool firstLetterUppercase = false);
+
+        #endregion Protected Methods
+
+        #region Private Methods
+
+        /// <summary>
         /// Parses the value into parts.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Parsed value into parts.</returns>
-        protected IList<Part> ParseValueIntoParts(double value)
+        private IList<Part> ParseValueIntoParts(double value)
         {
             List<Part> valueToReturn = new List<Part>();
             string formattedValue = value.ToString("#,##0.00");
@@ -109,14 +148,20 @@ namespace WordAmount.Common
         }
 
         /// <summary>
-        /// Gets the specified value.
+        /// Verifies the value can be gotten.
         /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="parts">The parts.</param>
-        /// <param name="firstLetterUppercase">if set to <c>true</c> [first letter uppercase].</param>
-        /// <returns>The value into word amount format.</returns>
-        protected abstract string Get(double value, IList<Part> parts, bool firstLetterUppercase = false);
+        /// <param name="category">The category.</param>
+        /// <exception cref="ApplicationException"></exception>
+        private void VerifyValueCanBeGotten(PartCategory category)
+        {
+            int highestCategorySupported = (int)HighestCategorySupported;
+            if ((int)category > highestCategorySupported)
+            {
+                string maxSupportedValue = new StringBuilder(((highestCategorySupported + 1) * 4) - 1).Insert(0, "999").Insert(3, ",999", highestCategorySupported - 1).Append(".99").ToString();
+                throw new ApplicationException(string.Format(MaxSupportedValueExceptionMessage, maxSupportedValue));
+            }
+        }
 
-        #endregion Protected Methods
+        #endregion Private Methods
     }
 }

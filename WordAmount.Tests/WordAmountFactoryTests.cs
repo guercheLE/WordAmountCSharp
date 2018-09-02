@@ -53,45 +53,108 @@ namespace WordAmount.Tests
         }
 
         /// <summary>
-        /// Get function test with culture DE #001.
+        /// Get function test with value zero (which is out of supported range).
         /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureDE001()
+        /// <param name="culture">The culture.</param>
+        [DataTestMethod]
+        [DataRow("de")]
+        [DataRow("en-US")]
+        [DataRow("es")]
+        [DataRow("fr")]
+        [DataRow("it")]
+        [DataRow("pt-BR")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetTestWithZeroValue(string culture)
         {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("de"));
-            string actual = wordAmount.Get(0.00, true);
-            Assert.AreEqual(string.Empty, actual);
+            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo(culture));
+            wordAmount.Get(0.00, true);
         }
 
         /// <summary>
-        /// Get function test with culture DE #002.
+        /// Get function test with double's max value (which is out of supported range).
         /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureDE002()
+        /// <param name="culture">The culture.</param>
+        [DataTestMethod]
+        [DataRow("de")]
+        [DataRow("en-US")]
+        [DataRow("es")]
+        [DataRow("fr")]
+        [DataRow("it")]
+        [DataRow("pt-BR")]
+        [ExpectedException(typeof(ApplicationException))]
+        public void GetTestWithDoubleMaxValue(string culture)
         {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("de"));
-            string actual = wordAmount.Get(0.01, true);
-            Assert.AreEqual("Ein Pfennig", actual);
+            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo(culture));
+            wordAmount.Get(double.MaxValue, true);
         }
 
         /// <summary>
-        /// Get function test with culture DE #003.
+        /// Get function test with valid value.
         /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureDE003()
+        /// <param name="culture">The culture.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="expectedResult">The expected result.</param>
+        [DataTestMethod]
+        [DataRow("de", 0.01, "Ein Pfennig")]
+        [DataRow("de", 1.00, "Ein Mark")]
+        [DataRow("de", 1000.00, "Ein Tausend Mark")]
+        [DataRow("de", 1000000.00, "Ein Million Mark")]
+        [DataRow("de", 1001001.01, "Eine Million, eine Tausend und ein Mark und ein Pfennig")]
+        [DataRow("de", 254743062813.00, "Zweihundertvierundfünfzig Milliarden, siebenhundertdreiundvierzig Millionen, zweiundsechzig Tausend und achthundertdreizehn Mark")]
+        [DataRow("en-US", 0.01, "One cent")]
+        [DataRow("en-US", 1.00, "One dollar")]
+        [DataRow("en-US", 1000.00, "One thousand dollars")]
+        [DataRow("en-US", 1000000.00, "One million dollars")]
+        [DataRow("en-US", 1001001.01, "One million, one thousand and one dollars and one cent")]
+        [DataRow("en-US", 254743062813.00, "Two hundred fifty-four billion, seven hundred forty-three million, sixty-two thousand and eight hundred thirteen dollars")]
+        [DataRow("es", 0.01, "Uno céntimo")]
+        [DataRow("es", 1.00, "Una peseta")]
+        [DataRow("es", 1000.00, "Uno mil pesetas")]
+        [DataRow("es", 1000000.00, "Uno millón pesetas")]
+        [DataRow("es", 1001001.01, "Uno millón, uno mil y una pesetas con uno céntimo")]
+        [DataRow("es", 254743062813.00, "Doscientos cincuenta y cuatro mil y setecientos cuarenta y tres millones, sesenta y dos mil y ochocientos trece pesetas")]
+        [DataRow("es", 1002034056.00, "Uno mil y dos millones, treinta y cuatro mil y cincuenta y seises pesetas")]
+        [DataRow("es", 2001034056.00, "Dos mil y uno millón, treinta y cuatro mil y cincuenta y seises pesetas")]
+        [DataRow("fr", 0.01, "Un centime")]
+        [DataRow("fr", 1.00, "Un franc")]
+        [DataRow("fr", 1000.00, "Un mille francs")]
+        [DataRow("fr", 1000000.00, "Un million de francs")]
+        [DataRow("fr", 1001001.01, "Un million, un mille et un francs et un centime")]
+        [DataRow("fr", 254743062813.00, "Deux cent cinquante-quatre milliards, sept cent quarante-trois millions, soixante-deux mille et huit cent treize francs")]
+        [DataRow("it", 0.01, "Uno centesimo")]
+        [DataRow("it", 1.00, "Una lira")]
+        [DataRow("it", 1000.00, "Uno mille lire")]
+        [DataRow("it", 1000000.00, "Uno milione di lire")]
+        [DataRow("it", 1001001.01, "Uno milione, uno mille e una lire e uno centesimo")]
+        [DataRow("it", 254743062813.00, "Duecentocinquantaquattro mila e settecentoquarantatre milioni, sessantadue mila e ottocentotredici lire")]
+        [DataRow("it", 1002034056.00, "Uno mille e due milioni, trentaquattro mila e cinquantasei lire")]
+        [DataRow("it", 2001034056.00, "Due mila e uno milione, trentaquattro mila e cinquantasei lire")]
+        [DataRow("pt-BR", 0.01, "Um centavo")]
+        [DataRow("pt-BR", 1.00, "Um real")]
+        [DataRow("pt-BR", 1000.00, "Um mil reais")]
+        [DataRow("pt-BR", 1000000.00, "Um milhão de reais")]
+        [DataRow("pt-BR", 1001001.01, "Um milhão, um mil e um reais e um centavo")]
+        [DataRow("pt-BR", 254743062813.00, "Duzentos e cinqüenta e quatro bilhões, setecentos e quarenta e três milhões, sessenta e dois mil e oitocentos e treze reais")]
+        public void GetTestWithValidValue(string culture, double value, string expectedResult)
         {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("de"));
-            string actual = wordAmount.Get(1.00, true);
-            Assert.AreEqual("Ein Mark", actual);
+            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo(culture));
+            string actualResult = wordAmount.Get(value, true);
+            Assert.AreEqual(expectedResult, actualResult);
         }
 
         /// <summary>
-        /// Get function test with culture DE #004.
+        /// Get function test with currency changed.
         /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureDE004()
+        /// <param name="culture">The culture.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="expectedResult">The expected result.</param>
+        [DataTestMethod]
+        [DataRow("de", 1.00, "Ein Euro")]
+        [DataRow("fr", 1.00, "Un Euro")]
+        [DataRow("fr", 1000000.00, "Un million d'Euros")]
+        public void GetTestWithCurrencyChanged(string culture, double value, string expectedResult)
         {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("de"));
+            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo(culture));
 
             wordAmount.CurrencyWordSingular = "Euro";
             Assert.AreEqual("Euro", wordAmount.CurrencyWordSingular);
@@ -99,457 +162,15 @@ namespace WordAmount.Tests
             wordAmount.CurrencyWordPlural = "Euros";
             Assert.AreEqual("Euros", wordAmount.CurrencyWordPlural);
 
-            string actual = wordAmount.Get(1.00, true);
-            Assert.AreEqual("Ein Euro", actual);
+            string actualResult = wordAmount.Get(value, true);
+            Assert.AreEqual(expectedResult, actualResult);
         }
 
         /// <summary>
-        /// Get function test with culture DE #005.
+        /// Get function test with culture pt-BR with changed cunjunction for cents.
         /// </summary>
         [TestMethod]
-        public void GetTestWithCultureDE005()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("de"));
-            string actual = wordAmount.Get(1000.00, true);
-            Assert.AreEqual("Ein Tausend Mark", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture DE #006.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureDE006()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("de"));
-            string actual = wordAmount.Get(1000000.00, true);
-            Assert.AreEqual("Ein Million Mark", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture DE #007.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureDE007()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("de"));
-            string actual = wordAmount.Get(1001001.01, true);
-            Assert.AreEqual("Eine Million, eine Tausend und ein Mark und ein Pfennig", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture DE #008.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureDE008()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("de"));
-            string actual = wordAmount.Get(254743062813.00, true);
-            Assert.AreEqual("Zweihundertvierundfünfzig Milliarden, siebenhundertdreiundvierzig Millionen, zweiundsechzig Tausend und achthundertdreizehn Mark", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture en-US #001.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureENUS001()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("en-US"));
-            string actual = wordAmount.Get(0.01, true);
-            Assert.AreEqual("One cent", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture en-US #002.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureENUS002()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("en-US"));
-            string actual = wordAmount.Get(1.00, true);
-            Assert.AreEqual("One dollar", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ENUS #003.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureENUS003()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("en-US"));
-            string actual = wordAmount.Get(1000.00, true);
-            Assert.AreEqual("One thousand dollars", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ENUS #004.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureENUS004()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("en-US"));
-            string actual = wordAmount.Get(1000000.00, true);
-            Assert.AreEqual("One million dollars", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ENUS #005.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureENUS005()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("en-US"));
-            string actual = wordAmount.Get(1001001.01, true);
-            Assert.AreEqual("One million, one thousand and one dollars and one cent", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ENUS #006.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureENUS006()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("en-US"));
-            string actual = wordAmount.Get(254743062813.00, true);
-            Assert.AreEqual("Two hundred fifty-four billion, seven hundred forty-three million, sixty-two thousand and eight hundred thirteen dollars", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ES #001.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureES001()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("es"));
-            string actual = wordAmount.Get(0.01, true);
-            Assert.AreEqual("Uno céntimo", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ES #002.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureES002()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("es"));
-            string actual = wordAmount.Get(1.00, true);
-            Assert.AreEqual("Una peseta", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ES #003.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureES003()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("es"));
-            string actual = wordAmount.Get(1000.00, true);
-            Assert.AreEqual("Uno mil pesetas", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ES #004.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureES004()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("es"));
-            string actual = wordAmount.Get(1000000.00, true);
-            Assert.AreEqual("Uno millón pesetas", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ES #005.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureES005()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("es"));
-            string actual = wordAmount.Get(1001001.01, true);
-            Assert.AreEqual("Uno millón, uno mil y una pesetas con uno céntimo", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ES #006.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureES006()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("es"));
-            string actual = wordAmount.Get(1002034056.00, true);
-            Assert.AreEqual("Uno mil y dos millones, treinta y cuatro mil y cincuenta y seises pesetas", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ES #007.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureES007()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("es"));
-            string actual = wordAmount.Get(2001034056.00, true);
-            Assert.AreEqual("Dos mil y uno millón, treinta y cuatro mil y cincuenta y seises pesetas", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture ES #008.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureES008()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("es"));
-            string actual = wordAmount.Get(254743062813.00, true);
-            Assert.AreEqual("Doscientos cincuenta y cuatro mil y setecientos cuarenta y tres millones, sesenta y dos mil y ochocientos trece pesetas", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture FR #001.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureFR001()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("fr"));
-            string actual = wordAmount.Get(0.01, true);
-            Assert.AreEqual("Un centime", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture FR #002.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureFR002()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("fr"));
-            string actual = wordAmount.Get(1.00, true);
-            Assert.AreEqual("Un franc", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture FR #003.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureFR003()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("fr"));
-            string actual = wordAmount.Get(1000.00, true);
-            Assert.AreEqual("Un mille francs", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture FR #004.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureFR004()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("fr"));
-            string actual = wordAmount.Get(1000000.00, true);
-            Assert.AreEqual("Un milliard de francs", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture FR #005.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureFR005()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("fr"));
-            string actual = wordAmount.Get(1001001.01, true);
-            Assert.AreEqual("Un milliard, un mille et un francs et un centime", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture FR #006.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureFR006()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("fr"));
-            string actual = wordAmount.Get(254743062813.00, true);
-            Assert.AreEqual("Deux cent cinquante-quatre mil millones, sept cent quarante-trois milliards, soixante-deux mille et huit cent treize francs", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture FR #007.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureFR007()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("fr"));
-            wordAmount.CurrencyWordSingular = "Euro";
-            wordAmount.CurrencyWordPlural = "Euros";
-            string actual = wordAmount.Get(1000000.00, true);
-            Assert.AreEqual("Un milliard d'Euros", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture IT #001.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureIT001()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("it"));
-            string actual = wordAmount.Get(0.01, true);
-            Assert.AreEqual("Uno centesimo", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture IT #002.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureIT002()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("it"));
-            string actual = wordAmount.Get(1.00, true);
-            Assert.AreEqual("Una lira", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture IT #003.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureIT003()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("it"));
-            string actual = wordAmount.Get(1000.00, true);
-            Assert.AreEqual("Uno mille lire", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture IT #004.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureIT004()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("it"));
-            string actual = wordAmount.Get(1000000.00, true);
-            Assert.AreEqual("Uno milione di lire", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture IT #005.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureIT005()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("it"));
-            string actual = wordAmount.Get(1001001.01, true);
-            Assert.AreEqual("Uno milione, uno mille e una lire e uno centesimo", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture IT #006.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureIT006()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("it"));
-            string actual = wordAmount.Get(1002034056.00, true);
-            Assert.AreEqual("Uno mille e due milioni, trentaquattro mila e cinquantasei lire", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture IT #007.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureIT007()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("it"));
-            string actual = wordAmount.Get(2001034056.00, true);
-            Assert.AreEqual("Due mila e uno milione, trentaquattro mila e cinquantasei lire", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture IT #008.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCultureIT008()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("it"));
-            string actual = wordAmount.Get(254743062813.00, true);
-            Assert.AreEqual("Duecentocinquantaquattro mila e settecentoquarantatre milioni, sessantadue mila e ottocentotredici lire", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture pt-BR #001.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCulturePTBR001()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("pt-BR"));
-            string actual = wordAmount.Get(0.01, true);
-            Assert.AreEqual("Um centavo", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture pt-BR #002.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCulturePTBR002()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("pt-BR"));
-            string actual = wordAmount.Get(1.00, true);
-            Assert.AreEqual("Um real", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture PTBR #003.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCulturePTBR003()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("pt-BR"));
-            string actual = wordAmount.Get(1000.00, true);
-            Assert.AreEqual("Um mil reais", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture PTBR #004.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCulturePTBR004()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("pt-BR"));
-            string actual = wordAmount.Get(1000000.00, true);
-            Assert.AreEqual("Um milhão de reais", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture PTBR #005.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCulturePTBR005()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("pt-BR"));
-            string actual = wordAmount.Get(1001001.01, true);
-            Assert.AreEqual("Um milhão, um mil e um reais e um centavo", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture PTBR #006.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCulturePTBR006()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("pt-BR"));
-            string actual = wordAmount.Get(254743062813.00, true);
-            Assert.AreEqual("Duzentos e cinqüenta e quatro bilhões, setecentos e quarenta e três milhões, sessenta e dois mil e oitocentos e treze reais", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture pt-BR #007.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCulturePTBR007()
-        {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("pt-BR"));
-            string actual = wordAmount.Get(1.01, true);
-            Assert.AreEqual("Um real e um centavo", actual);
-        }
-
-        /// <summary>
-        /// Get function test with culture pt-BR #008.
-        /// </summary>
-        [TestMethod]
-        public void GetTestWithCulturePTBR008()
+        public void GetTestWithCulturePTBRWithChangedCunjunctionForCents()
         {
             IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("pt-BR"));
 

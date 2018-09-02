@@ -18,26 +18,48 @@ namespace WordAmount.ptBR
     /// </summary>
     /// <seealso cref="WordAmount.Common.WordAmount"/>
     [Culture(culture: "pt-BR")]
-    public class WordAmount : Common.WordAmount
+    public sealed class WordAmount : Common.WordAmount
     {
-        #region Protected Fields
+        #region Private Fields
 
         /// <summary>
         /// The parts word.
         /// </summary>
-        protected static readonly string[,] partWord = new string[6, 2];
+        private static readonly string[,] partWord = new string[(int)PartCategory.Tredecillions + 1, 2];
 
         /// <summary>
         /// The amounts word.
         /// </summary>
-        protected static readonly string[] amountWord = new string[1000];
+        private static readonly string[] amountWord = new string[1000];
 
         /// <summary>
         /// The conjunction for cents.
         /// </summary>
-        protected static readonly string conjunctionForParts;
+        private static readonly string conjunctionForParts;
 
-        #endregion Protected Fields
+        #endregion Private Fields
+
+        #region Protected Properties
+
+        /// <summary>
+        /// Value must be greater than zero message.
+        /// </summary>
+        /// <value>The value must be greater than zero message.</value>
+        protected override string ValueMustBeGreaterThanZeroMessage => "Valor precisa ser maior que zero.";
+
+        /// <summary>
+        /// Highest category supported.
+        /// </summary>
+        /// <value>The highest category supported.</value>
+        protected override PartCategory HighestCategorySupported => (PartCategory)partWord.GetLength(0) - 1;
+
+        /// <summary>
+        /// Maximum supported value exception message.
+        /// </summary>
+        /// <value>The maximum supported value exception message.</value>
+        protected override string MaxSupportedValueExceptionMessage => "Maior valor suportado em português brasileiro é {0}";
+
+        #endregion Protected Properties
 
         #region Public Constructors
 
@@ -66,17 +88,35 @@ namespace WordAmount.ptBR
             partWord[(int)PartCategory.Trillions, (int)NumberType.Singular] = "trilhão";
             partWord[(int)PartCategory.Trillions, (int)NumberType.Plural] = "trilhões";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "???";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "???";
+            partWord[(int)PartCategory.Quadrillions, (int)NumberType.Singular] = "quatrilhão";
+            partWord[(int)PartCategory.Quadrillions, (int)NumberType.Plural] = "quatrilhões";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "???";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "???";
+            partWord[(int)PartCategory.Quintillions, (int)NumberType.Singular] = "quintilhão";
+            partWord[(int)PartCategory.Quintillions, (int)NumberType.Plural] = "quintilhões";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "???";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "???";
+            partWord[(int)PartCategory.Sextillions, (int)NumberType.Singular] = "sextilhão";
+            partWord[(int)PartCategory.Sextillions, (int)NumberType.Plural] = "sextilhões";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "???";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "???";
+            partWord[(int)PartCategory.Septillions, (int)NumberType.Singular] = "septilhão";
+            partWord[(int)PartCategory.Septillions, (int)NumberType.Plural] = "septilhões";
+
+            partWord[(int)PartCategory.Octillions, (int)NumberType.Singular] = "octilhão";
+            partWord[(int)PartCategory.Octillions, (int)NumberType.Plural] = "octilhões";
+
+            partWord[(int)PartCategory.Nonillions, (int)NumberType.Singular] = "nonilhão";
+            partWord[(int)PartCategory.Nonillions, (int)NumberType.Plural] = "nonilhões";
+
+            partWord[(int)PartCategory.Decillions, (int)NumberType.Singular] = "decilhão";
+            partWord[(int)PartCategory.Decillions, (int)NumberType.Plural] = "decilhões";
+
+            partWord[(int)PartCategory.Undecillions, (int)NumberType.Singular] = "undecilhão";
+            partWord[(int)PartCategory.Undecillions, (int)NumberType.Plural] = "undecilhões";
+
+            partWord[(int)PartCategory.Duodecillions, (int)NumberType.Singular] = "duodecilhão";
+            partWord[(int)PartCategory.Duodecillions, (int)NumberType.Plural] = "duodecilhões";
+
+            partWord[(int)PartCategory.Tredecillions, (int)NumberType.Singular] = "tredecilhão";
+            partWord[(int)PartCategory.Tredecillions, (int)NumberType.Plural] = "tredecilhões";
 
             amountWord[0] = "zero";
             amountWord[1] = "um";
@@ -153,11 +193,11 @@ namespace WordAmount.ptBR
         /// <summary>
         /// Gets the specified value.
         /// </summary>
-        /// <param name="value">The value.</param>
         /// <param name="parts">The parts.</param>
+        /// <param name="pluralizeCurrency">Pluralize currency?</param>
         /// <param name="firstLetterUppercase">if set to <c>true</c> [first letter uppercase].</param>
         /// <returns>The value into word amount format.</returns>
-        protected override string Get(double value, IList<Part> parts, bool firstLetterUppercase = false)
+        protected override string Get(IList<Part> parts, bool pluralizeCurrency, bool firstLetterUppercase = false)
         {
             bool addCurrency = false;
             bool currencyAdded = false;
@@ -185,7 +225,7 @@ namespace WordAmount.ptBR
                 if (addCurrency)
                 {
                     valueToReturn.Append(" ")
-                                 .Append(value > 1.99
+                                 .Append(pluralizeCurrency
                                          ? (parts[partIndex].Category >= PartCategory.Millions
                                             ? "de "
                                             : "") + currencyWord[(int)NumberType.Plural]

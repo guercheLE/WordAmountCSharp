@@ -18,26 +18,48 @@ namespace WordAmount.es
     /// </summary>
     /// <seealso cref="WordAmount.Common.WordAmount"/>
     [Culture(culture: "es")]
-    public class WordAmount : Common.WordAmount
+    public sealed class WordAmount : Common.WordAmount
     {
-        #region Protected Fields
+        #region Private Fields
 
         /// <summary>
         /// The parts word.
         /// </summary>
-        protected static readonly string[,] partWord = new string[6, 2];
+        private static readonly string[,] partWord = new string[(int)PartCategory.Sextillions + 1, 2];
 
         /// <summary>
         /// The amounts word.
         /// </summary>
-        protected static readonly string[] amountWord = new string[1000];
+        private static readonly string[] amountWord = new string[1000];
 
         /// <summary>
         /// The conjunction for cents.
         /// </summary>
-        protected static readonly string conjunctionForParts;
+        private static readonly string conjunctionForParts;
 
-        #endregion Protected Fields
+        #endregion Private Fields
+
+        #region Protected Properties
+
+        /// <summary>
+        /// Value must be greater than zero message.
+        /// </summary>
+        /// <value>The value must be greater than zero message.</value>
+        protected override string ValueMustBeGreaterThanZeroMessage => "El valor debe ser mayor que cero.";
+
+        /// <summary>
+        /// Highest category supported.
+        /// </summary>
+        /// <value>The highest category supported.</value>
+        protected override PartCategory HighestCategorySupported => (PartCategory)partWord.GetLength(0) - 1;
+
+        /// <summary>
+        /// Maximum supported value exception message.
+        /// </summary>
+        /// <value>The maximum supported value exception message.</value>
+        protected override string MaxSupportedValueExceptionMessage => "Mayor valor soportado en español es {0}";
+
+        #endregion Protected Properties
 
         #region Public Constructors
 
@@ -66,17 +88,14 @@ namespace WordAmount.es
             partWord[(int)PartCategory.Trillions, (int)NumberType.Singular] = "billón";
             partWord[(int)PartCategory.Trillions, (int)NumberType.Plural] = "billones";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "mil billones";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "mil billones";
+            partWord[(int)PartCategory.Quadrillions, (int)NumberType.Singular] = "mil billones";
+            partWord[(int)PartCategory.Quadrillions, (int)NumberType.Plural] = "mil billones";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "trillón";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "trillones";
+            partWord[(int)PartCategory.Quintillions, (int)NumberType.Singular] = "trillón";
+            partWord[(int)PartCategory.Quintillions, (int)NumberType.Plural] = "trillones";
 
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "mil trillones";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "mil trillones";
-
-            //partWord[(int)PartCategory.???, (int)NumberType.Singular] = "???";
-            //partWord[(int)PartCategory.???, (int)NumberType.Plural] = "???";
+            partWord[(int)PartCategory.Sextillions, (int)NumberType.Singular] = "mil trillones";
+            partWord[(int)PartCategory.Sextillions, (int)NumberType.Plural] = "mil trillones";
 
             amountWord[0] = "cero";
             amountWord[1] = "uno";
@@ -160,11 +179,11 @@ namespace WordAmount.es
         /// <summary>
         /// Gets the specified value.
         /// </summary>
-        /// <param name="value">The value.</param>
         /// <param name="parts">The parts.</param>
+        /// <param name="pluralizeCurrency">Pluralize currency?</param>
         /// <param name="firstLetterUppercase">if set to <c>true</c> [first letter uppercase].</param>
         /// <returns>The value into word amount format.</returns>
-        protected override string Get(double value, IList<Part> parts, bool firstLetterUppercase = false)
+        protected override string Get(IList<Part> parts, bool pluralizeCurrency, bool firstLetterUppercase = false)
         {
             bool addCurrency = false;
             bool currencyAdded = false;
@@ -183,7 +202,7 @@ namespace WordAmount.es
 
                 if (addCurrency)
                 {
-                    valueCurrencyWord = value > 1.99
+                    valueCurrencyWord = pluralizeCurrency
                                         ? currencyWord[(int)NumberType.Plural]
                                         : currencyWord[(int)NumberType.Singular];
 

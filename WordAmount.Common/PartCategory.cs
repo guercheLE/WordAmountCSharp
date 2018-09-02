@@ -42,6 +42,91 @@ namespace WordAmount.Common
         /// <summary>
         /// The trillions.
         /// </summary>
-        Trillions
+        Trillions,
+
+        /// <summary>
+        /// The quadrillion.
+        /// </summary>
+        Quadrillions,
+
+        /// <summary>
+        /// The quintillion.
+        /// </summary>
+        Quintillions,
+
+        /// <summary>
+        /// The sextillion.
+        /// </summary>
+        Sextillions,
+
+        /// <summary>
+        /// The septillion.
+        /// </summary>
+        Septillions,
+
+        /// <summary>
+        /// The octillion.
+        /// </summary>
+        Octillions,
+
+        /// <summary>
+        /// The nonillion.
+        /// </summary>
+        Nonillions,
+
+        /// <summary>
+        /// The decillion.
+        /// </summary>
+        Decillions,
+
+        /// <summary>
+        /// The undecillion.
+        /// </summary>
+        Undecillions,
+
+        /// <summary>
+        /// The duodecillion.
+        /// </summary>
+        Duodecillions,
+
+        /// <summary>
+        /// The tredecillion.
+        /// </summary>
+        Tredecillions,
+
+        /// <summary>
+        /// The quatttuordecillion.
+        /// </summary>
+        Quatttuordecillions,
+
+        /// <summary>
+        /// The quindecillion.
+        /// </summary>
+        Quindecillions,
+
+        /// <summary>
+        /// The sexdecillion.
+        /// </summary>
+        Sexdecillions,
+
+        /// <summary>
+        /// The septendecillion.
+        /// </summary>
+        Septendecillions,
+
+        /// <summary>
+        /// The octodecillion.
+        /// </summary>
+        Octodecillions,
+
+        /// <summary>
+        /// The novemdecillion.
+        /// </summary>
+        Novemdecillions,
+
+        /// <summary>
+        /// The vigintillion.
+        /// </summary>
+        Vigintillions
     }
 }
