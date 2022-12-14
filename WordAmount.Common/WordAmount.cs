@@ -158,7 +158,7 @@ namespace WordAmount.Common
             if ((int)category > highestCategorySupported)
             {
                 string maxSupportedValue = new StringBuilder(((highestCategorySupported + 1) * 4) - 1).Insert(0, "999").Insert(3, ",999", highestCategorySupported - 1).Append(".99").ToString();
-                throw new ApplicationException(string.Format(MaxSupportedValueExceptionMessage, maxSupportedValue));
+                throw new ArgumentException(string.Format(MaxSupportedValueExceptionMessage, maxSupportedValue));
             }
         }
 

@@ -7,23 +7,22 @@
 // <summary>
 // Culture Info Attribute Tests.
 // </summary>
+using Xunit;
+
 namespace WordAmount.Common.Tests
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     /// <summary>
     /// Culture Info Attribute Tests.
     /// </summary>
-    [TestClass]
     public class CultureInfoAttributeTests
     {
         #region Public Methods
 
-        [TestMethod]
+        [Fact]
         public void ConstructorAndCulturePropertyTest()
         {
             CultureAttribute cultureAttribute = new CultureAttribute("en-US");
-            Assert.AreEqual("en-US", cultureAttribute.Culture);
+            Assert.Equal("en-US", cultureAttribute.Culture);
         }
 
         #endregion Public Methods
