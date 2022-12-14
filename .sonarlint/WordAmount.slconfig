@@ -1,0 +1,12 @@
+{
+  "ServerUri": "https://sonarqube.grch.4cloud.click/",
+  "Organization": null,
+  "ProjectKey": "4b573324-4ce5-4652-a62f-e733d76af3bb",
+  "ProjectName": "WordAmountCSharp",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AYTVcQluknchqP1wVtNs",
+      "ProfileTimestamp": "2022-12-03T00:44:25Z"
+    }
+  }
+}

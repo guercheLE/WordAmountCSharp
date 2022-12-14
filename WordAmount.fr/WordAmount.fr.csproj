@@ -1,8 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+     <TargetFramework>net7.0</TargetFramework>
+    <CodeAnalysisRuleSet>..\.sonarlint\4b573324-4ce5-4652-a62f-e733d76af3bbcsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\.sonarlint\4b573324-4ce5-4652-a62f-e733d76af3bb\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WordAmount.Common\WordAmount.Common.csproj" />

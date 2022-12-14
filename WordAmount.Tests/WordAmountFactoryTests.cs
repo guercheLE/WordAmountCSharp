@@ -39,7 +39,7 @@ namespace WordAmount.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void CreateTestWithInvalidCulture()
         {
-            IWordAmount wordAmount = WordAmountFactory.Create(CultureInfo.GetCultureInfo("il"));
+            _ = WordAmountFactory.Create(CultureInfo.GetCultureInfo("il"));
         }
 
         /// <summary>

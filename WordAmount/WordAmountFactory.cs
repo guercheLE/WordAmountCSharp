@@ -41,8 +41,8 @@ namespace WordAmount
         {
             availableWordAmount = new Dictionary<string, Type>();
 
-            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-            string assemblyPath = Path.GetDirectoryName(new Uri(codeBase).LocalPath);
+            string location = Assembly.GetExecutingAssembly().Location;
+            string assemblyPath = Path.GetDirectoryName(new Uri(location).LocalPath);
 
             foreach (string libraryName in Directory.GetFiles(assemblyPath, "*.dll"))
             {
